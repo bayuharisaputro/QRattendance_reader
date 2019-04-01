@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity{
     Intent mServiceIntent;
     Context ctx;
     private String nim, password,kelas;
-    private String d_key, n_key;
+
     public Context getCtx() {
         return ctx;
     }
@@ -89,7 +89,6 @@ public class LoginActivity extends AppCompatActivity{
                         editor.putString("password", mPasswordView.getText().toString());
                         editor.putString("kelas",kelas);
                         editor.commit();
-                        getKey(kelas);
 //                        Snackbar.make(login_form, jObj.getString("message"),Snackbar.LENGTH_LONG).show();
                         Snackbar.make(login_form,jObj.getString("nama_mahasiswa") ,Snackbar.LENGTH_LONG).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -128,46 +127,6 @@ public class LoginActivity extends AppCompatActivity{
         AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
     }
 
-    private void getKey(final String kelasParam) {
-        StringRequest strReq = new StringRequest(Request.Method.POST, Server.URL +"getKey.php", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    success = jObj.getInt(TAG_SUCCESS);
-                    if (success == 1) {
-                        Log.d("get edit data", jObj.toString());
-                        n_key=(jObj.getString("n_key"));
-                        d_key=(jObj.getString("d_key"));
-                        SharedPreferences preferences = getSharedPreferences("user_key",MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("n_key", n_key);
-                        editor.putString("d_key", d_key);
-                        editor.commit();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Snackbar.make(login_form,"ada kesalahan",Snackbar.LENGTH_LONG).show();
-                }
 
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Error: " + error.getMessage());
-                Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("kelas", kelasParam);
-                return params;
-            }
-
-        };
-        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
-    }
 }
 

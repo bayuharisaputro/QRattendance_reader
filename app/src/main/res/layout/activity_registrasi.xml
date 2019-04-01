@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".RegistrasiActivity">
+
+
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textSize="37sp"
+        android:text="Registrasi Absensi"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorPrimary" />
+
+    <LinearLayout
+        android:id="@+id/a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Indonesia (+62)"
+            android:textSize="16dp"
+
+            />
+
+        <EditText
+            android:id="@+id/editTextPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:digits="0123456789"
+            android:hint="Masukkan nomor telp kamu"
+            android:maxLength="19" />
+
+
+
+    </LinearLayout>
+    <EditText
+        android:id="@+id/editTextNim"
+        android:layout_below="@id/a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:digits="0123456789"
+        android:layout_margin="18dp"
+        android:hint="Masukkan nim Kamu" />
+
+    <Button
+        android:layout_margin="10dp"
+        android:id="@+id/buttonContinue"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextNim"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPrimary"
+        android:text="Kirim"
+        android:textAllCaps="false"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonContinue"
+        android:layout_margin="30sp"
+        android:text="*Harus diperhatikan, isikan nim sesuai dengan nim dan nomor telp kamu sendiri. Sekali diregistrasi tidak akan bisa diubah - ubah"
+        />
+
+</RelativeLayout>

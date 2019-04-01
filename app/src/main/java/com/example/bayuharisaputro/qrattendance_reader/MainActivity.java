@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +38,12 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = AppController.class.getSimpleName();
+    String tag_json_obj = "json_obj_req";
     private AutoCompleteTextView mNim;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private String d_key, n_key;
     private static final String TAG_SUCCESS = "success";
     int success=1;
     private Button buttonScan;
@@ -49,13 +52,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String plain;
     private String checkSess;
     private IntentIntegrator intentIntegrator;
-
+    RelativeLayout Rlayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         buttonScan = findViewById(R.id.buttonScan);
         textStatus = findViewById(R.id.textViewStatus);
+        Rlayout = findViewById(R.id.activity_main);
         buttonScan.setOnClickListener(this);
         SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
         nama = prefs.getString("nama", null);
@@ -72,22 +76,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }else{
                 try{
                     JSONObject object = new JSONObject(result.getContents());
-                    this.challenge = object.getString("chal");
-                    this.hash = object.getString("hash");
-                    this.sess = object.getString("sess");
+                    this.challenge = object.getString("0");
+                    this.hash = object.getString("1");
                     decrypt(challenge);
 
-                    if(hash.equals(MD5(plain)) && sess.equals(checkSess)) {
+                    if(hash.equals(MD5(plain))) {
 
-                        textStatus.setText("HALO "+ nama + " :)");
+                        textStatus.setText("HALO " + nama + " :)");
 
-                    }
-                    else if(!sess.equals(checkSess) && hash.equals(MD5(plain)) ) {
-
-                        textStatus.setText("SESSION HABIS :(");
                     }
                     else {
-                        textStatus.setText("KAMU BUKAN KELAS INI :(");
+                        textStatus.setText("KAMU BUKAN KELAS INI ATAU SESSION KAMU HABIS :(( ");
                     }
 
                 }catch (JSONException e){
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-        getSess(kelas);
+         getKey(kelas);
         intentIntegrator = new IntentIntegrator(this);
         intentIntegrator.setOrientationLocked(false);
         intentIntegrator.setPrompt("Scan QR untuk melakukan absensi");
@@ -145,22 +144,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return null;
     }
 
-    private void getSess(final String kelasParam) {
-
-        StringRequest strReq = new StringRequest(Request.Method.POST, Server.URL +"getSess.php", new Response.Listener<String>() {
+    private void getKey(final String kelasParam) {
+        StringRequest strReq = new StringRequest(Request.Method.POST, Server.URL +"getKey.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-
                     JSONObject jObj = new JSONObject(response);
                     success = jObj.getInt(TAG_SUCCESS);
                     if (success == 1) {
                         Log.d("get edit data", jObj.toString());
-                        checkSess=(jObj.getString("sess"));
+                        n_key=(jObj.getString("n_key"));
+                        d_key=(jObj.getString("d_key"));
+                        SharedPreferences preferences = getSharedPreferences("user_key",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("n_key", n_key);
+                        editor.putString("d_key", d_key);
+                        editor.commit();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-
+                    Snackbar.make(Rlayout,"ada kesalahan",Snackbar.LENGTH_LONG).show();
                 }
 
             }
@@ -180,6 +183,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         };
-        AppController.getInstance().addToRequestQueue(strReq, "json_obj_req");
+        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
     }
 }
